@@ -1,0 +1,8 @@
+﻿1. Connection strings should be in appSettings.json
+2. Use var instead of binding variable with concrete types.
+3. For binding parameters with stored procedure use AddWithValue method.
+4. Dont write business logic or Database logic in controllers
+5. Variable names should be logical.
+6. Id column should not be inserted via SPs it should be identity automated.
+7. Id (primary key) are never updated.
+8. Column name if happens to be reserved word by SQL Server then wrap it around square brackets[].
