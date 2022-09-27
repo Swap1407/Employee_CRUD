@@ -7,11 +7,21 @@ namespace Employee_CRUD.Controllers
 {
     public class EmployeeController : Controller
     {
-        public IEmployeeFunctionLayer _function;
+        private IEmployeeDataAccessLayer _function;
         
-        public EmployeeController(IEmployeeFunctionLayer funct)
+        public EmployeeController(IEmployeeDataAccessLayer function)
         {
-            _function = funct;
+            _function = function;
+        }
+
+        public ActionResult GetAllEmployees()
+        {
+            return View(_function.GetEmployeeList());
+        }
+
+        public ActionResult EmployeeDetails(int Id)
+        {
+            return View(_function.GetEmployee(Id));
         }
 
         [HttpGet]
@@ -27,45 +37,11 @@ namespace Employee_CRUD.Controllers
             return RedirectToAction("GetAllEmployees");
         }
 
-        public ActionResult GetAllEmployees()
-        {
-            List<Employee> emp_List = new List<Employee>();
-            string ConnectionString = "data source=.; database=Employee_Data; integrated security=SSPI";
-            using (SqlConnection con = new SqlConnection(ConnectionString))
-            {
-                SqlCommand cmd = new SqlCommand("Select * from Employees", con);
-                con.Open();
-                SqlDataReader sdr = cmd.ExecuteReader();
- 
-                while (sdr.Read())
-                {
-                    Employee emp = new Employee();
-                    emp.Id = (int)sdr["Id"];
-                    emp.Name = (string)sdr["Name"];
-                    emp.Department = (string)sdr["Department"];
-                    emp_List.Add(emp);
-                }
-            }
-            return View(emp_List);
-        }
+        
         [HttpGet]
         public ActionResult EditEmployee(int Id)
         {
-            Employee employee = new Employee();
-            string ConnectionString = "data source=.; database=Employee_Data; integrated security=SSPI";
-            using (SqlConnection con = new SqlConnection(ConnectionString))
-            {
-                String query = "Select * from Employees Where Id = " + Id.ToString();
-                SqlCommand cmd = new SqlCommand(query, con);
-                con.Open();
-                SqlDataReader sdr = cmd.ExecuteReader();
-                sdr.Read();
-                employee.Id = (int)sdr["Id"];
-                employee.Name = (string)sdr["Name"];
-                employee.Department = (string)sdr["Department"];
-
-            }
-            return View(employee);
+            return View(_function.GetEmployee(Id));
         }
 
         
@@ -76,16 +52,9 @@ namespace Employee_CRUD.Controllers
             return RedirectToAction("GetAllEmployees");
         }
 
-        public ActionResult DeleteEmployee(Employee emp)
+        public ActionResult DeleteEmployee(int Id)
         {
-            string ConnectionString = "data source=.; database=Employee_Data; integrated security=SSPI";
-            using (SqlConnection con = new SqlConnection(ConnectionString))
-            {
-                String query = "Delete from Employees where Id = " + emp.Id.ToString();
-                SqlCommand cmd = new SqlCommand(query, con);
-                con.Open();
-                SqlDataReader sdr = cmd.ExecuteReader();
-            }
+            _function.DeleteEmployee(Id);
             return RedirectToAction("GetAllEmployees");
         }
     }
