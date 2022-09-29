@@ -7,6 +7,7 @@ namespace Employee_CRUD.Controllers
 {
     public class EmployeeController : Controller
     {
+        //meaningful name, make it readonly
         private IEmployeeDataAccessLayer _function;
         
         public EmployeeController(IEmployeeDataAccessLayer function)
@@ -16,6 +17,8 @@ namespace Employee_CRUD.Controllers
 
         public ActionResult GetAllEmployees()
         {
+            //first assign functions return value to some variable then pass it to view. because you might need to perform some mapping or UI specific other processing 
+            //as required 
             return View(_function.GetEmployeeList());
         }
 
@@ -33,6 +36,7 @@ namespace Employee_CRUD.Controllers
         [HttpPost]
         public ActionResult CreateEmployee(Employee employee)
         {
+            //check if model is valid in create and edit
             _function.AddEmployee(employee);
             return RedirectToAction("GetAllEmployees");
         }
