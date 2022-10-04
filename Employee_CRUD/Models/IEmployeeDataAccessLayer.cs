@@ -2,10 +2,10 @@
 {
     public interface IEmployeeDataAccessLayer
     {
-        public void AddEmployee(Employee employee);
-        public void SaveEmployee(Employee employee);
+        public Employee AddEmployee(Employee employee);
+        public Employee SaveEmployee(Employee employee);
         public List<Employee> GetEmployeeList();
         public Employee GetEmployee(int Id);
-        public void DeleteEmployee(int Id);
+        public Employee DeleteEmployee(int Id);
     }
 }

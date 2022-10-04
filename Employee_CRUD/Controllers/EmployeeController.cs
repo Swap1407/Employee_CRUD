@@ -8,23 +8,25 @@ namespace Employee_CRUD.Controllers
     public class EmployeeController : Controller
     {
         //meaningful name, make it readonly
-        private IEmployeeDataAccessLayer _function;
-        
-        public EmployeeController(IEmployeeDataAccessLayer function)
+        private readonly IEmployeeDataAccessLayer _dataLayerFunction;
+
+        public EmployeeController(IEmployeeDataAccessLayer dataLayerFunction)
         {
-            _function = function;
+            _dataLayerFunction = dataLayerFunction;
         }
 
         public ActionResult GetAllEmployees()
         {
             //first assign functions return value to some variable then pass it to view. because you might need to perform some mapping or UI specific other processing 
             //as required 
-            return View(_function.GetEmployeeList());
+            var employeelist = _dataLayerFunction.GetEmployeeList();
+            return View(employeelist);
         }
 
         public ActionResult EmployeeDetails(int Id)
         {
-            return View(_function.GetEmployee(Id));
+            var employee = _dataLayerFunction.GetEmployee(Id);
+            return View(employee);
         }
 
         [HttpGet]
@@ -37,29 +39,40 @@ namespace Employee_CRUD.Controllers
         public ActionResult CreateEmployee(Employee employee)
         {
             //check if model is valid in create and edit
-            _function.AddEmployee(employee);
-            return RedirectToAction("GetAllEmployees");
+            
+                if (ModelState.IsValid)
+                {
+                    var employeee = _dataLayerFunction.AddEmployee(employee);
+                    return View("EmployeeDetails",employeee);
+                }
+                return View();
+            
         }
 
-        
         [HttpGet]
         public ActionResult EditEmployee(int Id)
         {
-            return View(_function.GetEmployee(Id));
+            var employee = _dataLayerFunction.GetEmployee(Id);
+            return View(employee);
         }
 
-        
         [HttpPost]
         public ActionResult EditEmployee(Employee employee)
         {
-            _function.SaveEmployee(employee);
-            return RedirectToAction("GetAllEmployees");
+            
+                if (ModelState.IsValid)
+                {
+                    var employeee = _dataLayerFunction.SaveEmployee(employee);
+                    return View("EmployeeDetails", employeee);
+                }
+                return View();
+            
         }
 
         public ActionResult DeleteEmployee(int Id)
         {
-            _function.DeleteEmployee(Id);
-            return RedirectToAction("GetAllEmployees");
+            var employeee = _dataLayerFunction.DeleteEmployee(Id);
+            return View("EmployeeDetails", employeee);
         }
     }
 }
